@@ -1,0 +1,22 @@
+﻿
+@if (TempData["errorcode"].ToString() != "0" && TempData["errorcode"] != null)
+{
+    <div class="row px-3">
+        <div class="alert alert-danger col-12">
+            @switch (Int32.Parse(TempData["errorcode"].ToString()))
+            {
+                case 912:
+                    <b>Restricted Access:</b><span>You do not have permission to access this page.</span>
+                    break;
+                case -440:
+                    <b>Database Error (-440):</b><span>The following feature is non-functional. Please report issue to IT.</span>
+                    break;
+                default:
+                    <b>Warning: Unexpected Error. Please try again. <br />If problem persists, contact IT Support with following error message:</b>
+                    <br /><i>Code:@TempData["errorcode"].ToString() --- Message: @TempData["errormsg"].ToString() --- Source: @TempData["errorsrc"]</i>
+                    break;
+            }
+        </div>
+    </div>
+
+}

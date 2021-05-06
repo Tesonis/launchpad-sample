@@ -1,0 +1,849 @@
+﻿@{
+    ViewBag.Title = "Brand Development Management - Launchpad";
+    ViewBag.Name = Request.Cookies["SecToken"]["FullName"];
+}
+@model Launchpad.Models.HomeViewModels.BDMViewModel
+@Styles.Render("~/Content/bs-select")
+@Styles.Render("~/Content/css")
+@Styles.Render("~/Content/Site.css")
+<link href="~/Content/Site.css" rel="stylesheet" />
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Launchpad", null, new { area = string.Empty, controller = "Home" }, Request.Url.Scheme)"><i class="fa fa-lg fa-home pr-2"></i><b><u>Launchpad</u></b></a></li>
+        <li class="breadcrumb-item active" aria-current="page"><b>Launch Items</b></li>
+    </ol>
+</nav>
+<div class="bg-white py-3 multi_step_form">
+    <div class="mx-auto text-center py-4"><h2 class="text-muted">Launch Items</h2></div>
+    <div class="row">
+        <ul class="progressbar progressbar-3 col-8 mx-auto">
+            <li class="active">Select Items to Launch</li>
+            <li>Enter Launch Data</li>
+            <li>Select Status for Accounts</li>
+        </ul>
+    </div>
+    <hr />
+    <div class="row container-fluid">
+        <section id="section_error" class="container-fluid mx-auto"></section>
+        <div id="multiForm" class="container-fluid mx-auto">
+            @{Html.RenderPartial("_LaunchBDMStep1"); }
+            <div class="modal" id="modalWarningSave" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-danger" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">You have unsaved work</h4>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Leaving this page will result in loss of unsaved work. Would you like to save your work?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-danger" type="button" data-dismiss="modal">Continue without saving</button>
+                            <button class="btn btn-success" type="button">Save changes</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <section id="step2" class="d-none step">
+                <a href="#" onclick="Step1()"><i class="fa fa-long-arrow-left pr-2"></i>Previous Step</a>
+                <hr />
+                <h5 class="text-muted"><span class="text-primary">Step 2</span> - Add Launch Data to Items</h5>
+                <h6 class="text-muted py-30">Edit records individually or select table rows to edit as a group</h6>
+                <hr />
+
+                @if (ViewBag.a == "create")
+                {
+                    <div class="groupedit">
+                        <button class="btn btn-primary btn-lg btn-block btn-groupedit">Click to Update (<span class="groupeditcount"></span>) Selected Items</button>
+                    </div>
+                    <select id="select_sampleavail" hidden></select>
+                    <div id="launchtable">
+                        <table id="table_launchitems" class="table table-bordered datatable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th width="20"><button class="btn btn-primary btn-sm btn-selectall">Select All</button></th>
+                                    <th width="50">Item Num</th>
+                                    <th width="150">Item Description</th>
+                                    <th width="75">Unit Size</th>
+                                    <th>Mississauga <br />Inventory</th>
+                                    <th>Calgary <br />Inventory</th>
+                                    <th>Surrey <br />Inventory</th>
+                                    <th>Sample Availability</th>
+                                    <th width="100"></th>
+                                    <th hidden></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <hr />
+                    </div>
+                }
+                @if (ViewBag.a == "update")
+                {
+                    <div id="launchtable">
+                        <table id="table_updateitems" class="table table-bordered datatable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th width="20"><button class="btn btn-primary btn-sm">Select All</button></th>
+                                    <th hidden>launchid</th>
+                                    <th width="50">Item #</th>
+                                    <th>Item Description</th>
+                                    <th>Unit Size</th>
+                                    <th>Account</th>
+                                    <th>Banner</th>
+                                    <th hidden>Launch Type</th>
+                                    <th hidden>Sample Availability</th>
+                                    <th width="100"></th>
+                                    <th hidden></th>
+                                    <th hidden></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <hr />
+                    </div>
+                }
+                <hr />
+                <div class="row pt-4">
+                    @*@if (ViewBag.a == "update")
+                    {
+                        <a href="#?" class="btn btn-lg btn-outline-danger" data-toggle="modal" data-target="#deleteitem-modal">Unlaunch Selected Item</a>
+                    }*@
+                    @if (ViewBag.a == "create")
+                    {
+                        <a href="#?" class="btn btn-lg btn-success ml-auto" onclick="Step3('create')">Save and Continue</a>
+                    }
+                    else
+                    {
+                        <a href="#?" class="btn btn-lg btn-success ml-auto" onclick="Step3('update')">Save and Continue</a>
+                    }
+
+                </div>
+            </section>
+            <section id="step3" class="d-none step">
+                <a href="#" onclick="Step2()"><i class="fa fa-long-arrow-left pr-2"></i>Previous Step</a>
+                <hr />
+                <div class="mt-2 col-8 mx-auto">
+                    <h5 class="text-muted"><span class="text-primary">Step 3</span> - Select Item Status for Accounts</h5>
+                    <br />
+                    <select id="select_launchstatus" hidden></select>
+                    @if (ViewBag.a == "create" || ViewBag.a == null | ViewBag.a == "")
+                    {
+                        <table id="table_kac" class="table table-bordered datatable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th hidden></th>
+                                    <th>Key Accounts</th>
+                                    <th style="width:200px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    }
+                    else if (ViewBag.a == "update")
+                    {
+                        <table id="table_updatestatus" class="table table-bordered datatable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th hidden>launchid</th>
+                                    <th width="50">Item #</th>
+                                    <th>Item Description</th>
+                                    <th>Unit Size</th>
+                                    <th>Account</th>
+                                    <th>Banner</th>
+                                    <th hidden>Launchtype</th>
+                                    <th hidden>Sampleavail</th>
+                                    <th hidden>comment</th>
+                                    <th>New Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    }
+
+                </div>
+                @if (ViewBag.a == "create" || ViewBag.a == null | ViewBag.a == "")
+                {
+                    <div class="row pt-4">
+                        <button class="btn btn-lg btn-success ml-auto" data-toggle="modal" data-target="#submitlaunch-modal">Finalize Launch</button>
+                    </div>
+                }
+                else if (ViewBag.a == "update")
+                {
+                    <div class="row pt-4">
+                        <button class="btn btn-lg btn-success ml-auto" data-toggle="modal" data-target="#submitupdate-modal">Finalize Update</button>
+                    </div>
+                }
+            </section>
+            <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Add Comment</h4>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <b>Updating to (<span class="editmodal-count"></span>) items</b>
+                            <hr />
+                            <div class="form-group col-12">
+                                <label for="sel1">Sample Availability:</label>
+                                <select class="form-control ddl"></select>
+                            </div>
+                            <div class="form-group col-12">
+                                <label for="comment">Comment:</label>
+                                <textarea class="form-control txt-comment" rows="5" id=""></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary btn-block btn-save" type="button">Apply to Selected</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="comment-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Launch Comments</h4>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Launch Comments for: <span id="commentmodal_itemdesc"></span></h5>
+                            @if (ViewBag.a == "update")
+                            {
+                                <div class="list-group"></div>
+                                <hr />
+                            }
+
+                            <textarea id="commentmodal_commentext" class="col-12" rows="5"></textarea>
+                            <button id="commentmodal_savecomment" class="btn btn-primary btn-block" type="button">Add Comment</button>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="deleteitem-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-danger" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Selected launches will be reset</h4>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>The selected launches will be reset. All data will be reset, and the launches selected will be set to "Do Not Present" status.</p>
+                            <label for="input-resetlaunchconfirm">Enter your username to confirm</label>
+                            <input id="input-resetlaunchconfirm" type="text" class="form-control col-12" />
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="">Confirm Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="submitlaunch-modal" tabindex="-1" role="dialog" aria-labelledby="modalApprove" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalItemGroup1Label">Confirm Launch</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="chk-launchpkg">
+                                <label class="custom-control-label" for="chk-launchpkg"> <span class="text-danger"><b>Required*</b></span> Launch package has been sent via email</label>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btn-CompleteApprove" class="btn btn-lg btn-block btn-success disabled" onclick="SubmitLaunch()">Confirm Launch</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="submitupdate-modal" tabindex="-1" role="dialog" aria-labelledby="modalApprove" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalItemGroup1Label">Confirm Update</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-warning">
+                                Warning: Change cannot be undone
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#?" onclick="SubmitUpdate()" class="btn btn-lg btn-block btn-success">Confirm Update</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Scripts/Site/formwizard.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover();
+            ListBrandsbyBDM();
+            
+            @if (ViewBag.a == "update")
+            {
+                @:{ GetKeyAccountsDDL(); }
+            }
+            else {
+                @:{ ListSampleAvail(); }
+                @:{ ListLaunchStatus(); }
+            }
+
+
+        });
+
+
+
+    </script>
+
+    <script>
+
+        function applycommenttoall(btn) {
+            var comment = $("#comment").val();
+            btn.closest("section").find(".table-info textarea").val(comment);
+            btn.closest("section").find(".table-info").removeClass("table-info");
+            btn.closest("section").find(".fa-minus-circle").removeClass("fa-minus-circle");
+            btn.closest("section").find("#comment").val("");
+        }
+        $("#chk-launchpkg").click(function () {
+            if ($("#chk-launchpkg").is(':checked')) {
+                $("#btn-CompleteApprove").removeClass('disabled');
+            }
+            else {
+                $("#btn-CompleteApprove").addClass('disabled');
+            }
+        });
+        $(".group-item").click(function () {
+            if ($(this).closest("table").find(".table-info").length > 0) {
+                var groupeditcount = $(this).closest("table").find(".table-info").length
+                $(this).closest("section").find(".groupeditcount").text(groupeditcount.toString());
+
+                $(this).closest("section").find(".groupedit").slideDown();
+            }
+            else {
+                $(this).closest("section").find(".groupedit").slideUp();
+            }
+
+        });
+    </script>
+    <!--AJAX Form GET-->
+    <script>
+        function ListBrandsbyBDM() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ListBrandsbyBDM", "Home")',
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var responseArr = JSON.parse(response.toString());
+                        //Create default selection
+                        $("#select_brand").append('<option value= "" selected="true" disabled>--- No Brand Selected ---</option>');
+                        //Create option for each brand retrieved
+                        for (var i = 0; i < responseArr.length; i++) {
+                            $("#select_brand").append('<option value= "' + responseArr[i].Value + '">' + responseArr[i].Text + '</option>');
+                        }
+                        //Refresh bootstrap select to display new options
+                        $("#select_brand").selectpicker("refresh");
+
+                    }
+                },
+                error: function () {
+                    $("#section_error").html(RenderError("-1", "Unexpected Error", "BDM Brand List"));
+                }
+            });
+        }
+        function RetrieveInventory() {
+            var itemlist = $("#table_branditems").DataTable().rows(".table-info").data();
+            var itemids = [];
+            for (i = 0; i < itemlist.length; i++) {
+                itemids.push(itemlist[i][1]);
+            }
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("RetrieveInv", "Home")',
+                dataType: 'JSON',
+                data: { arr: JSON.stringify(itemids)},
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        //parse JSON to get 6 pieces of data
+                        //Put back into table in correct row
+                        var responseArr = JSON.parse(response.toString());
+                        for (i = 0; i < responseArr.length; i++) {
+                            var row = $("#table_launchitems tbody tr").eq(i);
+                            row.find(".w1inv").val(responseArr[i].Warehouseinv[0].CurrentInventory);
+                            row.find(".w8inv").val(responseArr[i].Warehouseinv[1].CurrentInventory);
+                            row.find(".w9inv").val(responseArr[i].Warehouseinv[2].CurrentInventory);
+                            
+                            if (responseArr[i].Warehouseinv[0].NextPODate != "0001-01-01T00:00:00") {
+                                var date = new Date(responseArr[i].Warehouseinv[0].NextPODate);
+                                row.find(".w1date").val(date.toLocaleDateString());
+                            }
+                            else {
+                                row.find(".w1date").val("-");
+                            }
+                            if (responseArr[i].Warehouseinv[1].NextPODate != "0001-01-01T00:00:00") {
+                                var date = new Date(responseArr[i].Warehouseinv[1].NextPODate);
+                                row.find(".w8date").val(date.toLocaleDateString());
+                            }
+                            else {
+                                row.find(".w8date").val("-");
+                            }
+                            if (responseArr[i].Warehouseinv[2].NextPODate != "0001-01-01T00:00:00") {
+                                var date = new Date(responseArr[i].Warehouseinv[2].NextPODate);
+                                row.find(".w9date").val(date.toLocaleDateString());
+                            }
+                            else {
+                                row.find(".w9date").val("-");
+                            }
+                        }
+                    }
+                },
+                error: function (request, status, error) {
+                    $("#section_error").html(RenderError("-1", "Unexpected Error", "Retrieve Inventory"));
+                }
+            });
+        }
+        //(Use current method as framework)
+        function ListUnlaunchedItems() {
+            //get brand code
+            event.preventDefault();
+            $("#section_error").html("");
+            var brand = $("#select_brand").val();
+            if (brand == "") {
+                $("#section_error").html(RenderError(101, "Select Brand is a mandatory field.", "Select Brand"));
+            }
+            else {
+                $.ajax({
+                type: "GET",
+                url: '@Url.Action("ListUnlaunchedItems", "Home")',
+                dataType: 'JSON',
+                data: { brand : brand},
+                success: function (response) {
+                    
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var responseArr = JSON.parse(response.toString());
+                        //display rest of the page 1 form
+                        $("#div_brandtable").show();
+                        $("#div_launchtype").show();
+                        //call AJAX function to populate the launch types dropdown
+                        ListLaunchTypes();
+                        //Reset Datatable on search success
+                        $('#table_branditems').DataTable().destroy();
+                        $("#table_branditems tbody").empty();
+                        for (var i = 0; i < responseArr.length; i++) {
+                            var warehousecat;
+                            switch (responseArr[i].Warehousecat.toString()) {
+                                case "F":
+                                    warehousecat = "Frozen";
+                                    break;
+                                case "P":
+                                    warehousecat = "Perishable";
+                                    break;
+                                default:
+                                    warehousecat = "Dry";
+                                    break;
+                            }
+                            $("#table_branditems tbody").append("<tr><td><a href='#?' class='group-item'><i class='fa fa-plus-circle'></i></a></td><td>" + responseArr[i].ItemID + "</td><td>" + responseArr[i].ItemDescEng + "</td><td>" + responseArr[i].Size + "</td><td>" + warehousecat + "</td></tr>");
+                        }
+                        //Recreate datatable
+                        $('#table_branditems').DataTable({
+                            "columnDefs": [
+                                { "orderable": false, "targets": 0 }
+                            ],
+                            "order": [[1, "asc"]],
+                            initComplete: function () {
+                                $(this.api().table().container()).find('input').parent().wrap('<form>').parent().attr('autocomplete', 'off');
+                            }
+                        });
+                        //For each item in json array
+                        //Create new row in table
+                        //On end of loop, display table section
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+            }
+            
+        }
+        function ListLaunchTypes() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ListLaunchTypes", "Home")',
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var responseArr = JSON.parse(response.toString());
+                        //Create option for each brand retrieved
+                        $("#select_launchtype").empty();
+                        for (var i = 0; i < responseArr.length; i++) {
+                            $("#select_launchtype").append('<option value= "' + responseArr[i].Value + '">' + responseArr[i].Text + '</option>');
+                        }
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        function ListSampleAvail() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ListSampleAvail", "Home")',
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var responseArr = JSON.parse(response.toString());
+                        //Create option for each retrieved
+                        for (var i = 0; i < responseArr.length; i++) {
+                            $("#select_sampleavail").append('<option value= "' + responseArr[i].Value + '">' + responseArr[i].Text + '</option>');
+                        }
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        function ListLaunchComments(item, launchid) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ListComments", "Home")',
+                dataType: 'JSON',
+                data: { launchid : launchid },
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var rowhtml = '<tr><td> <a href="#?" class="group-item"><i class="fa fa-plus-circle"></i></a></td><td hidden><span class="data-launchid">'+item[1]+'</span></td><td>' + item[2] + '</td><td><span class="data-itemdesc">' + item[3] + '</span></td><td>' + item[4] + '</td>';
+                        rowhtml += '<td><span>' + item[5] + '</td>';
+                        if (item[6] == "undefined") {
+                            rowhtml += '<td></td>';
+                        }
+                        else {
+                            rowhtml += '<td>' + item[6] + '</td>';
+                        }
+                        rowhtml += '<td hidden>' + item[9] + '</td>';
+                        rowhtml += '<td hidden>' + item[10] + '</td>';
+                        rowhtml += '<td><button type="button" class="btn btn-outline-primary editcommentbtn">Edit Comment</button></td><td hidden><label class="data-jsoncomment">' + response.toString() +'</label></td><td hidden><span class="data-comment"></span></td></tr>';
+                        $("#table_updateitems tbody").append(rowhtml);
+                        $('#table_updateitems').DataTable();
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        function GetKeyAccountsDDL() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetKeyAccounts", "Home")',
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var responseArr = JSON.parse(response.toString());
+                        $("#select_kac").append('<option value= "" selected="true">All</option>');
+                        //Create option for each retrieved
+                        for (var i = 0; i < responseArr.length; i++) {
+                            $("#select_kac").append('<option value= "' + responseArr[i].AccountCode + '">' + responseArr[i].AccountName + '</option>');
+                        }
+                        $("#select_kac").selectpicker("refresh");
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        function GetKeyAccounts() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetKeyAccounts", "Home")',
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var table = $('#table_kac');
+                        var responseArr = JSON.parse(response.toString());
+                        //Create option for each retrieved
+                        for (var i = 0; i < responseArr.length; i++) {
+                            var htmlstring = '<tr><td hidden>' + responseArr[i].AccountCode + '</td>';
+                            htmlstring += '<td>' + responseArr[i].AccountName + '</td>';
+                            htmlstring += '<td><select class="form-control">';
+                            htmlstring += $("#select_launchstatus").html();
+                            htmlstring += '</select></td></tr>';
+                            table.append(htmlstring);
+                        }
+                        $('#table_kac').DataTable({
+                            "columnDefs": [
+                                { "orderable": false, "targets": 2 }
+                            ],
+                            "order": [[1, "asc"]],
+                            initComplete: function () {
+                                $(this.api().table().container()).find('input').parent().wrap('<form>').parent().attr('autocomplete', 'off');
+                            }
+                        });
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        function ListLaunchStatus() {
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ListLaunchStatus", "Home")',
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var responseArr = JSON.parse(response.toString());
+                        //Create option for each retrieved
+                        $("#select_launchstatus").empty();
+                        for (var i = 3; i >= 1; i--) {
+                            $("#select_launchstatus").append('<option value= "' + responseArr[i].Value + '">' + responseArr[i].Text + '</option>');
+                        }
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        
+        function ListBDMLaunches() {
+            $("#section_error").html("");
+            var brand = $("#select_brand").val();
+            var account = $("#select_kac").val();
+            $('#table_bdmupdate').DataTable().clear();
+            $('#table_bdmupdate').DataTable().destroy();
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ListBDMLaunches", "Home")',
+                dataType: 'JSON',
+                data: { src: "bdmupdate", brand: brand,kac: account },
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var responseArr = JSON.parse(response.toString());
+                        
+                        //Create option for each brand retrieved
+                        for (i = 0; i < responseArr.length; i++) {
+                            var rowhtml = "<tr>";
+                            rowhtml += "<td><a href='#?' class='group-item'><i class='fa fa-plus-circle'></i></a></td>"
+                            rowhtml += "<td hidden>" + responseArr[i].LaunchID + "</td>"
+                            rowhtml += "<td>" + responseArr[i].Itemnumber + "</td>";
+                            rowhtml += "<td>" + responseArr[i].Itemdesc + "</td>";
+                            rowhtml += "<td>" + responseArr[i].Itemsize + "</td>";
+                            rowhtml += "<td>" + responseArr[i].Customeraccname + "</td>";
+                            rowhtml += "<td hidden>" + responseArr[i].Customercode + "</td>";
+                            rowhtml += "<td>" + responseArr[i].Bannername + "</td>";
+                            rowhtml += "<td hidden>" + responseArr[i].Bannercode + "</td>";
+                            rowhtml += "<td hidden>" + responseArr[i].Launchtype + "</td>";
+                            rowhtml += "<td hidden>" + responseArr[i].Sampleavail + "</td>";
+                            switch (responseArr[i].Status) {
+                                case "N/A":
+                                    rowhtml += "<td><i class='fa fa-square text-dark'></i> Do Not Present</td>";
+                                    break;
+                                case "Do Not Present":
+                                    rowhtml += "<td><i class='fa fa-square text-dark'></i> Do Not Present</td>";
+                                    break;
+                                case "Discussion Required":
+                                    rowhtml += "<td><i class='fa fa-square text-dark'></i> Discussion Required</td>";
+                                    break;
+                                case "Ready to Present":
+                                    rowhtml += "<td><i class='fa fa-square text-secondary'></i> Ready to Present</td>";
+                                    break;
+                                case "VOR Change Initiated":
+                                    rowhtml += "<td><i class='fa fa-square text-muted'></i> VOR Change Initiated</td>";
+                                    break;
+                                case "Vor Change Complete":
+                                    rowhtml += "<td><i class='fa fa-square text-success'></i> Vor Change Complete</td>";
+                                    break;
+                                case "Initial Contact":
+                                    rowhtml += "<i class='fa fa-square text-info'></i> Initial Contact</td>";
+                                    break;
+                                case "Initial Meeting":
+                                    rowhtml += "<td><i class='fa fa-square text-info'></i> Initial Meeting</td>";
+                                    break;
+                                case "Launch Package Sent":
+                                    rowhtml += "<td><i class='fa fa-square text-info'></i> Launch Package Sent</td>";
+                                    break;
+                                case "Pending":
+                                    rowhtml += "<td><i class='fa fa-square text-primary'></i> Pending</td>";
+                                    break;
+                                case "Declined By Client":
+                                    rowhtml += "<td><i class='fa fa-square text-danger'></i> Declined By Client</td>";
+                                    break;
+                                case "Declined By Retailer":
+                                    rowhtml += "<td><i class='fa fa-square text-danger'></i> Declined By Retailer</td>";
+                                    break;
+                                default:
+                                    rowhtml += "<td><i class='fa fa-square text-success'></i> Accepted</td>";
+                                    break;
+                            }
+                            rowhtml += "</tr>"
+                            $("#table_bdmupdate tbody").append(rowhtml);
+                        }
+
+                        //Create datatable
+                        $('#table_bdmupdate').dataTable({
+                            "columnDefs": [
+                                { "orderable": true },
+                            ],
+                            "searching": false,
+                            "order": [[0, "asc"]],
+                            "lengthChange": false
+                        });
+                        $("#table_bdmupdate").removeAttr('style');
+                        $("#div-brandtable").show();
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        //Create and Update uses this function
+        function SubmitLaunch() {
+            $("#section_error").html("");
+            $("#btn-CompleteApprove").addClass('disabled');
+            var launchtype = $("#select_launchtype").val();
+            var itempayloads = [];
+            var kacpayloads = [];
+            var itemrows = $("#table_launchitems tbody tr");
+            for (i = 0; i < itemrows.length; i++) {
+                var itemid = itemrows.eq(i).find(".sorting_1").text();
+                var sampleavail = itemrows.eq(i).find(".data-sampleavail").val();
+                var launchcomment = itemrows.eq(i).find(".data-comment").text();
+                var item = { Itemid: itemid, Sampleavail: sampleavail, Comment: launchcomment };
+                itempayloads.push(item);
+            }
+            $("#table_kac").DataTable().destroy();
+            var kacrows = $("#table_kac tbody tr");
+            for (i = 0; i < kacrows.length; i++) {
+                var customercode = kacrows.eq(i).find("td").eq(0).text();
+                var initstatus = kacrows.eq(i).find("select").val();
+                var customeraccount = { Customercode: customercode, Status: initstatus }
+                kacpayloads.push(customeraccount);
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SubmitLaunch", "Home")',
+                dataType: 'JSON',
+                data: { launchtype: launchtype, items: JSON.stringify(itempayloads), customeracc: JSON.stringify(kacpayloads)},
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                        $("#btn-CompleteApprove").removeClass('disabled');
+                    }
+                    else {
+                        window.location.replace(response.url);
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        function SubmitUpdate() {
+            $("#section_error").html("");
+            $("#btn-CompleteApprove").addClass('disabled');
+            var updatepayloads = [];
+            var itemrows = $("#table_updatestatus tbody tr");
+            for (i = 0; i < itemrows.length; i++) {
+                var launchid = itemrows.eq(i).find(".data-launchid").text();
+                var launchtype = itemrows.eq(i).find(".data-launchtype").text();
+                var sampleavail = itemrows.eq(i).find(".data-sampleavail").text();
+                var comment = itemrows.eq(i).find(".data-comment").text();
+                var status = itemrows.eq(i).find("select").val();
+                var launch = { Launchid: launchid, Launchtype: launchtype, Sampleavail: sampleavail, Comment: comment, Status: status };
+                updatepayloads.push(launch);
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SubmitUpdateBDM", "Home")',
+                dataType: 'JSON',
+                data: { updatejson: JSON.stringify(updatepayloads)},
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                        $("#btn-CompleteApprove").removeClass('disabled');
+                    }
+                    else {
+                        window.location.replace(response.url);
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+    </script>
+
+}

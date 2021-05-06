@@ -1,0 +1,509 @@
+﻿<section id="step2" class="my-4 p-3 bg-white border">
+
+    <section id="formajax">
+        <div class="p-3 d-flex align-items-center">
+            <i class="fa fa-bar-chart bg-success p-3 font-2xl mr-3"></i>
+            <div class="text-value-sm text-success">Analytics</div>
+            <button class="btn btn-outline-primary btn-lg ml-auto" onclick="print()"><i class="fa fa-print"></i></button>
+        </div>
+        <hr />
+        <div class="mt-2 row col-12">
+            <div class="col-3">
+                <div class="py-3"><b>Select Brand</b></div>
+                <div class="input-group">
+                    <select class="selectpicker form-control search-result-filter" id="select-brand2" data-live-search="true" data-style="btn-white border-secondary bg-white"></select>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="py-3"><b>Select Account</b></div>
+                <div class="input-group">
+                    <select class="selectpicker form-control search-result-filter" id="select-kac-item2" data-live-search="true" data-style="btn-white border-secondary bg-white"></select>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="py-3"><b>Select Banner</b></div>
+                <div class="input-group">
+                    <select class="form-control" id="select-banner2"></select>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="py-3"><b>Status</b></div>
+                <div class="input-group">
+                    <!--Add select Multiple-->
+                    <select id="select_item_launchstatus2" class="form-control selectpicker" data-style="btn-white border-secondary bg-white" multiple></select>
+                </div>
+            </div>
+            <div class="col-12 mt-3">
+                <span class="input-group-append">
+                    <button class="btn btn-success btn-block" type="button" onclick="reportsummary()">Generate Report</button>
+                </span>
+            </div>
+
+        </div>
+    </section>
+    <hr />
+    <section id="report">
+        <section id="reportsummary" style="display:none;">
+            <!--Any brand, any account: Summary-->
+            <!--Display total items in each status-->
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="text-muted">All Unique SKUs - Overview </h5>
+                    <hr />
+                </div>
+
+                <div class="col-6 my-auto" id="reportData">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="thead-dark">
+                                <th>Status</th>
+                                <th>Total SKUs</th>
+                                <th>% of SKU Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="summarylbl">Discussion Required</td>
+                                <td class="summarydata">13</td>
+                                <td class="summaryperc"></td>
+                            </tr>
+                            <tr>
+                                <td class="summarylbl">Ready to Present</td>
+                                <td class="summarydata">43</td>
+                                <td class="summaryperc"></td>
+                            </tr>
+                            <tr>
+                                <td class="summarylbl">Initiated</td>
+                                <td class="summarydata">48</td>
+                                <td class="summaryperc"></td>
+                            </tr>
+                            <tr>
+                                <td class="summarylbl">Pending</td>
+                                <td class="summarydata">66</td>
+                                <td class="summaryperc"></td>
+                            </tr>
+                            <tr class="table-success">
+                                <td class="summarylbl">Accepted</td>
+                                <td class="summarydata">630</td>
+                                <td class="summaryperc"></td>
+                            </tr>
+                            <tr class="table-danger">
+                                <td class="summarylbl">Rejected</td>
+                                <td class="summarydata">30</td>
+                                <td class="summaryperc"></td>
+                            </tr>
+                            <tr class="table-light">
+                                <th>Total</th>
+                                <th id="summary-total"></th>
+                                <th>100%</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <div class="canvas-holder">
+                        <canvas id="chart-summary-all"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <br />
+        <section id="reportgroupaccount" class="mt-5" style="display:none;">
+            <!--Any brand, any account: group by account/brand-->
+            <!--Display total items in each status-->
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="text-muted">All Unique In-Progress SKUs - Breakdown by Account</h5>
+                    <hr />
+                </div>
+
+                <div class="col-6 my-auto" id="reportData">
+                    <h6 class="text-muted"><span class="text-danger">*</span>'Discussion Required' not shown</h6>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="thead-dark">
+                                <th>Account</th>
+                                <th>Ready to Present</th>
+                                <th>Initiated</th>
+                                <th>Pending</th>
+                                <th>Accepted</th>
+                                <th>Rejected</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Walmart</td>
+                                <td class="acc-status1"><a href="#?" data-toggle="modal" data-target="#modal-accountbranddetails">3</a></td>
+                                <td class="acc-status2">12</td>
+                                <td class="acc-status3">64</td>
+                                <td>431</td>
+                                <td>42</td>
+                                <th><a href="#?" onclick="reportaccountbrand()"><u>522</u></a></th>
+                            </tr>
+                            <tr>
+                                <td>Costco</td>
+                                <td class="acc-status1">1</td>
+                                <td class="acc-status2">7</td>
+                                <td class="acc-status3">33</td>
+                                <td>354</td>
+                                <td>21</td>
+                                <th>416</th>
+                            </tr>
+                            <tr>
+                                <td>Metro Ontario</td>
+                                <td class="acc-status1">7</td>
+                                <td class="acc-status2">21</td>
+                                <td class="acc-status3">55</td>
+                                <td>651</td>
+                                <td>53</td>
+                                <th>787</th>
+                            </tr>
+                            <tr>
+                                <td>Loblaw - NATIONAL</td>
+                                <td class="acc-status1">15</td>
+                                <td class="acc-status2">32</td>
+                                <td class="acc-status3">68</td>
+                                <td>441</td>
+                                <td>66</td>
+                                <th>622</th>
+                            </tr>
+                            <tr>
+                                <td>Sobeys</td>
+                                <td class="acc-status1">4</td>
+                                <td class="acc-status2">43</td>
+                                <td class="acc-status3">77</td>
+                                <td>461</td>
+                                <td>44</td>
+                                <th>629</th>
+                            </tr>
+                            <tr>
+                                <td>Metro</td>
+                                <td class="acc-status1">9</td>
+                                <td class="acc-status2">11</td>
+                                <td class="acc-status3">22</td>
+                                <td>333</td>
+                                <td>34</td>
+                                <th>409</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <div class="canvas-holder">
+                        <canvas id="chart-summary-account"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <br />
+
+        <section id="reportacountdetails" class="mt-5" style="display:none;">
+            <!--1 brand, any accounts or Any brands, 1 account-->
+            <!--Display average timeframe for all brand items or all account items, display success rate-->
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="text-muted">Account/Brand Timeline - Walmart / All Brands</h5>
+                    <hr />
+                </div>
+
+                <div class="col-6 my-auto" id="reportData">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="thead-dark">
+                                <th colspan="4">Average Timeline</th>
+                            </tr>
+                            <tr class="thead-light">
+                                <th>Status</th>
+                                <th>Number of SKUs</th>
+                                <th>Average Days in Status</th>
+                                <th>% of In-progress SKUs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Discussion Required</td>
+                                <td>0</td>
+                                <td>23 Days</td>
+                                <td>0%</td>
+                            </tr>
+                            <tr>
+                                <td>Ready to Present</td>
+                                <td><a href="#?" data-toggle="modal" data-target="#modal-accountbranddetails">3</a></td>
+                                <td>8 Days</td>
+                                <td>3.6%</td>
+                            </tr>
+                            <tr>
+                                <td>Sample Required</td>
+                                <td>0</td>
+                                <td>18 Days</td>
+                                <td>0%</td>
+                            </tr>
+                            <tr>
+                                <td>Initiated</td>
+                                <td>12</td>
+                                <td>17 Days</td>
+                                <td>15.2%</td>
+                            </tr>
+                            <tr>
+                                <td>Pending</td>
+                                <td>64</td>
+                                <td>63 Days</td>
+                                <td>81.0%</td>
+                            </tr>
+                            <tr class="table-light">
+                                <th>Total In-progress</th>
+                                <th>79</th>
+                                <th>93 Days</th>
+                                <th>100%</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-6 my-auto" id="reportData">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="thead-dark">
+                                <th colspan="4">Approval Rate</th>
+                            </tr>
+                            <tr class="thead-light">
+                                <th>Status</th>
+                                <th>Number of SKUs</th>
+                                <th>Average Timeframe (days)</th>
+                                <th>% of Finalized SKUs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-success">
+                                <td>Approved</td>
+                                <td>500</td>
+                                <td>95 days</td>
+                                <td>83.4%</td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td>Declined by Customer</td>
+                                <td>65</td>
+                                <td>55 days</td>
+                                <td>12.9</td>
+                            </tr>
+                            <tr class="table-danger">
+                                <td>Declined by Client</td>
+                                <td>34</td>
+                                <td>35 days</td>
+                                <td>5.7%</td>
+                            </tr>
+                            <tr class="table-light">
+                                <th>Total Finalized</th>
+                                <th>599</th>
+                                <th>72 days</th>
+                                <th>100%</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+        <section id="reportitemaccounts" class="mt-5" style="display:none;">
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="text-muted">Item Details for All Accounts</h5>
+                    <hr />
+                </div>
+                <div class="col-6">
+                    <h5>SKU Status</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="thead-dark">
+                                <th colspan="4">90001 - Kikkoman Soy Sauce 255ml</th>
+                            </tr>
+                            <tr class="thead-light">
+                                <th>Account/Banner</th>
+                                <th>Current Status</th>
+                                <th>Last Status Update</th>
+                                <th>Time Elapsed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-primary">
+                                <td>Amazon</td>
+                                <td>Not VOR</td>
+                                <td>07/11/2019</td>
+                                <td>0 Days</td>
+                            </tr>
+                            <tr>
+                                <td>Walmart</td>
+                                <td>Pending</td>
+                                <td>08/11/2019</td>
+                                <td>71 Days</td>
+                            </tr>
+                            <tr>
+                                <td>Costco</td>
+                                <td>Pending</td>
+                                <td>08/31/2019</td>
+                                <td>71 Days</td>
+                            </tr>
+                            <tr>
+                                <td>Loblaws/Nofrills</td>
+                                <td>Pending</td>
+                                <td>08/21/2019</td>
+                                <td>71 Days</td>
+                            </tr>
+                            <tr>
+                                <td>Loblaws/Fortinos</td>
+                                <td>Pending</td>
+                                <td>08/21/2019</td>
+                                <td>71 Days</td>
+                            </tr>
+                            <tr>
+                                <td>Sobeys</td>
+                                <td>Pending</td>
+                                <td>08/24/2019</td>
+                                <td>71 Days</td>
+                            </tr>
+                            <tr class="table-primary">
+                                <td>Metro</td>
+                                <td>Accepted</td>
+                                <td>09/17/2019</td>
+                                <td>69 Days</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-6">
+                    <h5>SKU Timeline</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="thead-dark">
+                                <th colspan="6">90001 - Kikkoman Soy Sauce 255ml</th>
+                            </tr>
+                            <tr class="thead-light">
+                                <th>Account/Banner</th>
+                                <th>Discussion Required</th>
+                                <th>Ready to Present</th>
+                                <th>Sample Required</th>
+                                <th>Initiated</th>
+                                <th>Pending</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-primary">
+                                <td>Amazon</td>
+                                <td><span class="sku-status0">0</span> Days</td>
+                                <td><span class="sku-status1">0</span> Days</td>
+                                <td><span class="sku-status2">0</span> Days</td>
+                                <td><span class="sku-status3">0</span> Days</td>
+                                <td><span class="sku-status4">0</span> Days</td>
+                            </tr>
+                            <tr>
+                                <td>Walmart</td>
+                                <td><span class="sku-status0">0</span> Days</td>
+                                <td><span class="sku-status1">5</span> Days</td>
+                                <td><span class="sku-status2">21</span> Days</td>
+                                <td><span class="sku-status3">15</span> Days</td>
+                                <td><span class="sku-status4">30</span> Days</td>
+                            </tr>
+                            <tr>
+                                <td>Costco</td>
+                                <td><span class="sku-status0">11</span> Days</td>
+                                <td><span class="sku-status1">7</span> Days</td>
+                                <td><span class="sku-status2">10</span> Days</td>
+                                <td><span class="sku-status3">13</span> Days</td>
+                                <td><span class="sku-status4">30</span> Days</td>
+                            </tr>
+                            <tr>
+                                <td>Loblaws/Nofrills</td>
+                                <td><span class="sku-status0">0</span> Days</td>
+                                <td><span class="sku-status1">11</span> Days</td>
+                                <td><span class="sku-status2">0</span> Days</td>
+                                <td><span class="sku-status3">20</span> Days</td>
+                                <td><span class="sku-status4">40</span> Days</td>
+                            </tr>
+                            <tr>
+                                <td>Loblaws/Fortinos</td>
+                                <td><span class="sku-status0">0</span> Days</td>
+                                <td><span class="sku-status1">9</span> Days</td>
+                                <td><span class="sku-status2">0</span> Days</td>
+                                <td><span class="sku-status3">20</span> Days</td>
+                                <td><span class="sku-status4">42</span> Days</td>
+                            </tr>
+                            <tr>
+                                <td>Sobeys</td>
+                                <td><span class="sku-status0">11</span> Days</td>
+                                <td><span class="sku-status1">5</span> Days</td>
+                                <td><span class="sku-status2">0</span> Days</td>
+                                <td><span class="sku-status3">20</span> Days</td>
+                                <td><span class="sku-status4">35</span> Days</td>
+                            </tr>
+                            <tr class="table-primary">
+                                <td>Metro</td>
+                                <td><span class="sku-status0">5</span> Days</td>
+                                <td><span class="sku-status1">7</span> Days</td>
+                                <td><span class="sku-status2">3</span> Days</td>
+                                <td><span class="sku-status3">19</span> Days</td>
+                                <td><span class="sku-status4">35</span> Days</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <div class="canvas-holder">
+                        <canvas id="chart-summary-sku"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <br />
+
+    </section>
+</section>
+<!--Modals-->
+<div class="modal fade" id="modal-accountbranddetails" tabindex="-1" role="dialog" aria-labelledby="modalDetails" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalItemGroup1Label">Displaying List of Items for:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5><b>Account: </b><a href="#?" onclick="reportaccountbrandmodal()"><u>Walmart</u></a></h5>
+                <h5><b>Status: </b><i class="fa fa-square text-secondary"></i> Ready to Present</h5>
+                <hr />
+                <table class="table table-bordered">
+                    <thead>
+                        <tr class="thead-light">
+                            <th>Item #</th>
+                            <th>Item Description</th>
+                            <th>Size</th>
+                            <th>Brand</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="#?" onclick="reportitem()"><u>90001</u></a></td>
+                            <td>Kikkoman Soy Sauce 255ml</td>
+                            <td>255 ml</td>
+                            <td>Kikkoman</td>
+                        </tr>
+                        <tr>
+                            <td>90002</td>
+                            <td>Kikkoman Soy Sauce 500ml</td>
+                            <td>500 ml</td>
+                            <td>Kikkoman</td>
+                        </tr>
+                        <tr>
+                            <td>90003</td>
+                            <td>Kikkoman Soy Sauce 750ml</td>
+                            <td>750 ml</td>
+                            <td>Kikkoman</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+﻿@model Launchpad.Models.HomeViewModels.BDMViewModel
+
+<section id="step1" class="step mx-auto col-9">
+    @if (ViewBag.a == "create" || ViewBag.a == null | ViewBag.a == "")
+    {
+        <h5 class="text-muted">
+            <span class="text-primary">Step 1</span> - Select Products to Launch
+        </h5>
+        <form onsubmit="ListUnlaunchedItems()">
+            <div class="mt-2">
+                <div class="py-3"><b>Select Brand</b></div>
+                <div class="input-group">
+
+                    @Html.DropDownListFor(x => x.Searchbrand, Enumerable.Empty<SelectListItem>(), new { @id = "select_brand", @class = "selectpicker form-control search-result-filter", data_live_search = "true", data_style = "btn-white border-secondary bg-white", title = "--- No Brand Selected ---", @required = true })
+                    <span class="input-group-append">
+                        <button class="btn btn-success" type="submit">Search Unlaunched Items</button>
+                    </span>
+                </div>
+            </div>
+        </form>
+
+        <div id="div_brandtable" style="display:none;">
+            <hr />
+            <table id="table_branditems" class="table table-bordered datatable">
+                <thead class="thead-light">
+                    <tr>
+                        <th width="50"><button class="btn btn-primary btn-sm btn-selectall">Select All</button></th>
+                        <th>Item Number</th>
+                        <th>Item Description</th>
+                        <th>Unit Size</th>
+                        <th>Warehouse Category</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <hr />
+        //Create only
+        <div id="div_launchtype" style="display:none;">
+            <div class="form-group">
+                <div class="py-3">
+                    <b>Select Launch Type:</b>
+                </div>
+                <select class="form-control pl-2" id="select_launchtype"></select>
+            </div>
+            <hr />
+            <div class="row py-4 col-12 mx-auto px-0">
+                <button class="btn btn-lg btn-success btn-block" onclick="Step2('step1', 'create')" disabled="disabled">No Items Selected</button>
+            </div>
+        </div>
+
+    }
+    else if (ViewBag.a == "update")
+    {
+        <h5 class="text-muted">
+            <span class="text-primary">Step 1</span> - Select Products to Update
+        </h5>
+        <div class="mt-2">
+            <div class="py-2">
+                <b>Select Brand</b>
+            </div>
+            <div class="input-group">
+                @Html.DropDownListFor(x => x.Searchbrand, Enumerable.Empty<SelectListItem>(), new { @id = "select_brand", @class = "selectpicker form-control search-result-filter", data_live_search = "true", data_style = "btn-white border-secondary bg-white", title = "--- No Brand Selected ---", @required = true })
+
+            </div>
+            <div class="py-2">
+                <b>Select Account</b>
+            </div>
+            <div class="input-group">
+                <select class="selectpicker form-control search-result-filter" id="select_kac" data-live-search="true" data-style="btn-white border-secondary bg-white"></select>
+                <span class="input-group-append">
+                    <button class="btn btn-success" type="button" onclick="ListBDMLaunches()">Search All Items</button>
+                </span>
+            </div>
+        </div>
+        <hr />
+        <div id="div-brandtable" style="display:none">
+            <table id="table_bdmupdate" class="table table-bordered datatable">
+                <thead class="thead-light">
+                    <tr>
+                        <th width="50">
+                            <button class="btn btn-primary btn-sm btn-selectall">Select All</button>
+                        </th>
+                        <th hidden>launchid</th>
+                        <th>Item Number</th>
+                        <th>Item Description</th>
+                        <th>Unit Size</th>
+                        <th>Account</th>
+                        <th hidden></th>
+                        <th>Banner</th>
+                        <th hidden></th>
+                        <th hidden>launchtype</th>
+                        <th hidden>sampleavail</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <hr />
+            <div class="row py-4 col-12 mx-auto px-0">
+                <button class="btn btn-lg btn-outline-success btn-block" onclick="Step2('step1','update')">Update Selected Items</button>
+            </div>
+        </div>
+        
+    }
+</section>

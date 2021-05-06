@@ -1,0 +1,916 @@
+﻿
+@{
+    ViewBag.Title = "CDM Item Launch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Launchpad.Models.HomeViewModels.CDMViewModel
+@Styles.Render("~/Content/bs-select")
+@Styles.Render("~/Content/css")
+@Styles.Render("~/Content/Site.css")
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Launchpad", null, new { area = string.Empty, controller = "Home" }, Request.Url.Scheme)"><i class="fa fa-lg fa-home pr-2"></i><b><u>Launchpad</u></b></a></li>
+        <li class="breadcrumb-item active" aria-current="page"><b>Launch Action / Update</b></li>
+    </ol>
+</nav>
+<div class="bg-white py-5 multi_step_form">
+
+    <div class="mx-auto text-center py-4"><h2 class="text-muted">Launch Action / Update</h2></div>
+    <div class="row col-10 mx-auto">
+        <ul class="progressbar col-12">
+            <li class="active col-4" style="width:33%">Select Items</li>
+            <li style="width:33%">Update Details</li>
+            <li style="width:33%">Update Status</li>
+        </ul>
+    </div>
+    <hr />
+    <div class="row container-fluid">
+
+        <div class="col-12 mx-auto">
+            <section id="section_error"></section>
+            <section id="step1" class="step mx-auto col-12">
+                <h5 class="text-muted"><span class="text-primary">Step 1</span> - Select Products to Update</h5>
+                <section id="section_error"></section>
+                <div class="mt-2 row col-12">
+                    <select id="select_status" class="form-control" hidden></select>
+                    <select id="select_declinedreason" class="form-control" hidden></select>
+                    <div class="col-4">
+                        <div class="py-3"><b>Select Account</b></div>
+                        <div class="input-group">
+                            <select class="selectpicker form-control search-result-filter" id="select-kac" data-live-search="true" data-style="btn-white border-secondary bg-white"></select>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="py-3"><b>Select Banner</b></div>
+                        <div class="input-group">
+                            <select class="form-control" id="select-banner"></select>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="py-3"><b>Select Brand</b></div>
+                        <div class="input-group">
+                            @Html.DropDownListFor(x => x.Brands, Model.Brands, new { @id = "select_brand", @class = "selectpicker form-control search-result-filter", data_live_search = "true", data_style = "btn-white border-secondary bg-white", title = "--- No Brand Selected ---" })
+
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <span class="input-group-append">
+                            <button class="btn btn-primary btn-block" type="button" onclick="ListCDMLaunches()">Search Items</button>
+                        </span>
+                    </div>
+
+                </div>
+                <hr />
+                @if (ViewBag.a == "launch")
+                {
+                    <div id="div-cdmupdate" style="display:none">
+                        <table id="table_cdmlaunches" class="table table-bordered datatable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th width="50"><button class="btn btn-primary btn-sm btn-selectall">Select All</button></th>
+                                    <th hidden>launchid</th>
+                                    <th width="50">Item #</th>
+                                    <th>Item Description</th>
+                                    <th width="50">Unit Size</th>
+                                    <th>Account</th>
+                                    <th hidden></th>
+                                    <th>Banner</th>
+                                    <th hidden></th>
+                                    <th>Sample Availability</th>
+                                    <th>Launch Type</th>
+                                    <th>Status</th>
+                                    <th hidden>category</th>
+                                    <th hidden>pogreview</th>
+                                    <th hidden>pogdrop</th>
+                                    <th hidden>contactcomment</th>
+                                    <th hidden>competitive</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <hr />
+                    </div>
+                }
+                else if (ViewBag.a == "update" || ViewBag.a == null || ViewBag.a == "")
+                {
+                    <div id="div-cdmupdate" style="display:none">
+                        <table id="table_cdmlaunches" class="table table-bordered datatable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th width="50"><button class="btn btn-primary btn-sm btn-selectall">Select All</button></th>
+                                    <th hidden>launchid</th>
+                                    <th width="50">Item #</th>
+                                    <th>Item Description</th>
+                                    <th width="50">Unit Size</th>
+                                    <th>Account</th>
+                                    <th hidden></th>
+                                    <th>Banner</th>
+                                    <th hidden></th>
+                                    <th>Sample Availability</th>
+                                    <th>Launch Type</th>
+                                    <th>Status</th>
+                                    <th hidden>category</th>
+                                    <th hidden>pogreview</th>
+                                    <th hidden>pogdrop</th>
+                                    <th hidden>contactcomment</th>
+                                    <th hidden>competitive</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <hr />
+                    </div>
+                }
+                <div class="row py-5 col-12 mx-auto" id="step1final" style="display:none">
+                    <button class="btn btn-lg btn-success btn-block" onclick="Step2('step1','cdmupdate')" disabled="disabled">No Items Selected</button>
+                </div>
+
+            </section>
+
+            <section id="step2" class="mt-3 step d-none">
+                <a href="#?" onclick="Step1()"><i class="fa fa-long-arrow-left pr-2"></i>Previous Step</a><hr />
+                <h5 class="text-muted py-3"><span class="text-primary">Step 2</span> - Update Details</h5>
+                <h6 class="text-muted py-30">Edit records individually or select table rows to edit as a group</h6>
+                <hr />
+                <div id="launchtable" class="table-responsive">
+                    <table id="table_cdmupdatelaunch" class="table table-bordered datatable">
+                        <thead class="thead-light">
+                            <tr>
+                                <th width="50"><button class="btn btn-primary btn-sm btn-selectall">Select All</button></th>
+                                <th hidden>LaunchID</th>
+                                <th>Item #</th>
+                                <th>Item Description</th>
+                                <th width="100">Unit Size</th>
+                                <th>Account</th>
+                                <th hidden>accountcode</th>
+                                <th>Banner</th>
+                                <th hidden>bannercode</th>
+                                <th width="150">Customer Info</th>
+                                <th hidden>category</th>
+                                <th hidden>pogreview</th>
+                                <th hidden>pogdrop</th>
+                                <th hidden>contactcomm</th>
+                                <th hidden>competitive</th>
+                                <th hidden>currstatus</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <hr />
+                </div>
+                <hr />
+                <div class="row pt-4">
+                    <button class="btn btn-lg btn-success btn-block" onclick="Step3('cdm')">Next Step</button>
+                </div>
+                <div class="groupedit">
+                    <button class="btn btn-primary btn-lg btn-block btn-groupeditcdm1">Click to Update (<span class="groupeditcount">1</span>) Selected Items</button>
+                </div>
+                <div class="modal fade" id="groupedit-cdmdetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Contact / Competitive Info</h4>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <h5>Category:</h5>
+                                        <input type="text" class="form-control txt-category" />
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <h5>Planogram Review Date</h5>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                            <input type="date" class="form-control bg-white input-pogreview" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <h5>Planogram Drop Date</h5>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                            <input type="date" class="form-control bg-white input-pogdrop" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <h5>Category Manager / Comments</h5>
+                                <textarea class="col-12 txt-catcomment" rows="5" placeholder="Category Manager / Comments"></textarea>
+                                <hr />
+                                <h5>Competitive Info</h5>
+                                <textarea class="col-12 txt-competitive" rows="5" placeholder="Enter Related Competitive Info"></textarea>
+                                <button class="btn btn-primary btn-block btn-save" type="button">Update Info</button>
+                            </div>
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="modal-cdmeditinfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Contact / Competitive Info</h4>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <h5>Info for: <span class="itemdesc"></span></h5>
+                                <hr />
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <h5>Category:</h5>
+                                        <input type="text" class="form-control category" />
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <h5>Planogram Review Date</h5>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                            <input type="date" class="form-control bg-white pogreview">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <h5>Planogram Drop Date</h5>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                            <input type="date" class="form-control bg-white pogdrop">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <h5>Category Manager / Comments</h5>
+                                <textarea class="col-12 categorycomment" rows="5" placeholder="Enter Customer Contact info & Comments"></textarea>
+                                <hr />
+                                <h5>Competitive Info</h5>
+                                <textarea class="col-12 competitive" rows="5" placeholder="Enter Competitive Info"></textarea>
+                                <button id="btn-updatecdminfo" class="btn btn-primary btn-block " type="button">Update Info</button>
+                            </div>
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+            <section id="step3" class="mt-3 step d-none">
+                <!-- PO Details -->
+                <a href="#?" onclick="Step2()"><i class="fa fa-long-arrow-left pr-2"></i>Previous Step</a><hr />
+                <h5 class="text-muted py-3"><span class="text-primary">Step 3</span> - Update Status</h5>
+                <h6 class="text-muted py-30">Edit records individually or select table rows to edit as a group</h6>
+                <div class="groupedit">
+                    <button class="btn btn-primary btn-lg btn-block btn-groupeditcdm2">Click to Update (<span class="groupeditcount">1</span>) Selected Items</button>
+                </div>
+                <hr />
+                <div id="div-cdmstatuscomment" class="table-responsive">
+                    <table id="table_cdmstatuscomment" class="table table-bordered datatable">
+                        <thead class="thead-light">
+                            <tr>
+                                <th width="50"><button class="btn btn-primary btn-sm btn-selectall">Select All</button></th>
+                                <th hidden>launchid</th>
+                                <th width="50">Item #</th>
+                                <th width="150">Item Description</th>
+                                <th width="75">Unit Size</th>
+                                <th width="100">Account</th>
+                                <th hidden></th>
+                                <th width="75">Banner</th>
+                                <th hidden></th>
+                                <th>Status</th>
+                                <th width="75">Comments</th>
+                                <th width="75">Follow Up Date</th>
+                                <th hidden>commenttext</th>
+                                <th hidden>jsoncomments</th>
+                                <th hidden>category</th>
+                                <th hidden>pogr</th>
+                                <th hidden>pogd</th>
+                                <th hidden>categorycomment</th>
+                                <th hidden>competitive</th>
+                            </tr>
+
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <hr />
+                </div>
+                <hr />
+                <div class="row pt-4">
+                    <button id="btn-cdmupdate" class="btn btn-lg btn-success btn-block" onclick="SubmitUpdate()">Update</button>
+                </div>
+                <div class="modal fade" id="groupedit-cdmdetails2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Update Selected</h4>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group col-12">
+                                    <label for="comment">Change Status:</label>
+                                    <select id="groupedit-status" class="form-control"></select>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label for="comment">Add Comment:</label>
+                                    <textarea class="form-control txt-comment" rows="5" id="comment"></textarea>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label for="comment">Set Follow Up Date:</label>
+                                    <input id="groupedit-followupdate" type="date" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary btn-block btn-save" type="button">Apply to Selected</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="comment-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Status Comments</h4>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <h5>Updates for: <span id="commentmodal_itemdesc"></span></h5>
+                                @if (ViewBag.a == "update")
+                                {
+                                    <div class="list-group"></div>
+                                    <hr />
+                                }
+                                <textarea id="commentmodal_commentext" class="col-12" rows="5"></textarea>
+                                <button id="commentmodal_savecomment" class="btn btn-primary btn-block" type="button" data-dismiss="modal">Add Comment</button>
+                            </div>
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="step4" class="mt-3 step d-none">
+                <a href="#?" onclick="Step3()"><i class="fa fa-long-arrow-left pr-2"></i>Previous Step</a><hr />
+                <h5 class="text-muted py-3"><span class="text-primary">Step 4</span> - Review and Set Follow Up</h5>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="comment">Follow Up Date:</label>
+                            <input type="date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-0">
+                    <div class="col-4">
+                        <button class="btn btn-block btn-primary" onclick="applycommenttoall()">Set Follow up dates for selected</button>
+                    </div>
+                </div>
+
+                <hr />
+                <div class="table-responsive">
+                    <table id="table_step4" class="table table-bordered datatable">
+                        <thead class="thead-light">
+                            <tr>
+                                <th width="50"><button class="btn btn-primary btn-sm btn-selectall">Select All</button></th>
+                                <th>Item #</th>
+                                <th>Item Description</th>
+                                <th>Unit Size</th>
+                                <th>Status</th>
+                                <th>Follow Up Date</th>
+                                <th width="100"></th>
+                                <th width="100"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><a href="#?" class="group-item"><i class="fa fa-plus-circle"></i></a></td>
+                                <td>90001</td>
+                                <td>Kikkoman Tempura Batter Mix</td>
+                                <td>255 GR</td>
+                                <td><i class="fa fa-square text-primary"></i> Pending</td>
+                                <td><input type="date" class="form-control"></td>
+                                <td><button class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#commentview-modal">Comments</button></td>
+                                <td><button class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#modalDetails">View Info</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="row pt-4">
+                    <a href="@Url.Action("Launchpad", null, new { view = "cdm", controller = "Home" }, Request.Url.Scheme)" class="btn btn-lg btn-success btn-block">Save and Exit</a>
+                </div>
+
+                <!--Modals-->
+                <div class="modal fade" id="modalDetails" tabindex="-1" role="dialog" aria-labelledby="modalDetails" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalItemGroup1Label">Details for: 90001 - Kikkoman Soy Sauce 255ml - 255 ml</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card border-0">
+                                    <div class="card-body p-1">
+                                        <div class="row col-12">
+                                            <div class="col-6">
+                                                <label>Sample Availability</label><br />
+                                                <b>Full Distribution</b>
+                                            </div>
+                                            <div class="col-6">
+                                                <label>Launch Type</label><br />
+                                                <b>Line Extension</b>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">
+                                                <div class="form-group">
+                                                    <h5>Category</h5>
+                                                    <input type="text" class="form-control" contenteditable="false" value="Example Category">
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <div class="form-group">
+                                                    <h5>Planogram Review Date</h5>
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                        </div>
+                                                        <input type="text" class="form-control bg-white" readonly>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <div class="form-group">
+                                                    <h5>Planogram Drop Date</h5>
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                        </div>
+                                                        <input type="text" class="form-control bg-white" readonly>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <div class="form-group">
+                                                    <h5>Category Manager / Contact Info</h5>
+                                                    <textarea class="form-control bg-white" rows="5" id="comment1" readonly>Contact Info Example</textarea>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <div class="form-group">
+                                                    <h5>Competitive Info</h5>
+                                                    <textarea class="form-control bg-white" rows="5" id="comment2" readonly>Competitive Info Example</textarea>
+                                                </div>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="commentview-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Status Comments</h4>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <h5>Comments for: Kikkoman Soy Sauce 255ml</h5>
+                                <div class="list-group">
+                                    <div class="list-group-item flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <p class="mb-1">Received package and sent it to customer</p>
+                                            <span><small>02/02/2020</small></span>
+                                        </div>
+                                        <small><b>Cathy Pye</b></small>
+                                    </div>
+                                    <div class="list-group-item flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <p class="mb-1">Email exchange with loblaws</p>
+                                            <span><small>02/10/2020</small></span>
+                                        </div>
+                                        <small><b>Cathy Pye</b></small>
+                                    </div>
+                                    <div class="list-group-item flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <p class="mb-1">Phone Call with rep</p>
+                                            <span><small>02/12/2020</small></span>
+                                        </div>
+                                        <small><b>Cathy Pye</b></small>
+                                    </div>
+                                    <div class="list-group-item flex-column align-items-start list-group-item-success">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <p class="mb-1">Followed up, planned meeting on march 3rd</p>
+                                            <span><small><b>New</b></small></span>
+                                        </div>
+                                        <small><b>Cathy Pye</b></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/Scripts/Site/formwizard.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            
+            $('[data-toggle="tooltip"]').tooltip();
+            $("#btn-programDeselectAll").hide();
+            GetKeyAccountsDDL();
+            ListUpdateStatusCDM();
+            ListDeclinedReason();
+        });
+        
+        function selectAll() {
+            $('#selitemGroups option').attr('selected', true);
+            $("#selitemGroups").data("selectpicker").refresh()
+        }
+        function showbrandtable() {
+            $("#brandtable").show();
+            $("#step1final").show();
+        }
+        $(".group-item").click(function () {
+            if ($(this).closest("table").find(".table-info").length > 0) {
+                var groupeditcount = $(this).closest("table").find(".table-info").length
+                $(this).closest("section").find(".groupeditcount").text(groupeditcount.toString());
+                
+                $(this).closest("section").find(".groupedit").slideDown();
+            }
+            else {
+                $(this).closest("section").find(".groupedit").slideUp();
+            }
+            
+        });
+        
+    </script>
+    <!--AJAX Calls-->
+    <script>
+        function ListDeclinedReason() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ListDeclinedReason", "Home")',
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var responseArr = JSON.parse(response.toString());
+                        //Create option for each retrieved
+                        $("#select_declinedreason").empty();
+                        for (var i = 0; i < responseArr.length; i++) {
+                            $("#select_declinedreason").append('<option value= "' + responseArr[i].Value + '">' + responseArr[i].Text + '</option>');
+                            
+                        }
+                        
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        function ListUpdateStatusCDM() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ListLaunchStatus", "Home")',
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var responseArr = JSON.parse(response.toString());
+                        //Create option for each retrieved
+                        $("#select_status").empty();
+                        for (var i = 0; i < responseArr.length; i++) {
+                            $("#select_status").append('<option value= "' + responseArr[i].Value + '">' + responseArr[i].Text + '</option>');
+                            if (i > 3) {
+                                $("#groupedit-status").append('<option value= "' + responseArr[i].Value + '">' + responseArr[i].Text + '</option>');
+                            }
+                        }
+                        $("#groupedit-status").append('<option value= "' + responseArr[0].Value + '">' + responseArr[0].Text + '</option>');
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        function GetKeyAccountsDDL() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetKeyAccounts", "Home")',
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var responseArr = JSON.parse(response.toString());
+                        $("#select-kac").append('<option value= "" selected="true">All</option>');
+                        //Create option for each retrieved
+                        for (var i = 0; i < responseArr.length; i++) {
+                            $("#select-kac").append('<option value= "' + responseArr[i].AccountCode + '">' + responseArr[i].AccountName + '</option>');
+                        }
+                        $("#select-kac").selectpicker("refresh");
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        $('#select-kac').change(function () {
+            
+            var data = $(this).val().toString();
+            
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetBannerFromAcc", "Home")',
+                dataType:'JSON',
+                data: { kac: data},
+                success: function (response) {
+                    var responseArr = JSON.parse(response.toString());
+                    $("#select-banner").append('<option value= "" selected="true">All</option>');
+                    //Create option for each retrieved
+                    for (i = 0; i < responseArr.length; i++) {
+                        $("#select-banner").append('<option value= "' + responseArr[i].Value + '">' + responseArr[i].Text + '</option>');
+                    }
+                    $("#select-banner").selectpicker("refresh");
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        });
+        function ListCDMLaunches() {
+            var action = @Html.Raw(Json.Encode(@ViewBag.a));
+            var brand = $("#select_brand").val();
+            var account = $("#select-kac").val();
+            var banner = $("#select-banner").val();
+            $("#div-cdmupdate").show();
+            $('#table_cdmlaunches').DataTable().clear();
+            $('#table_cdmlaunches').DataTable().destroy();
+            if (action == "launch") {
+                var src = "cdminit";
+            }
+            else {
+                var src = "inprogress";
+            }
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ListCDMLaunches", "Home")',
+                dataType: 'JSON',
+                data: { src: src, brand: brand, kac: account, banner:banner },
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        var responseArr = JSON.parse(response.toString());
+                        
+                        //Create option for each brand retrieved
+                        for (i = 0; i < responseArr.length; i++) {
+                            if (responseArr[i].Status == "Discussion Required") {
+                                var rowhtml = "<tr class='table-secondary'>";
+                                rowhtml += "<td><a><i class='fa fa-times-circle text-danger'></i></a></td>";
+                            }
+                            else {
+                                var rowhtml = "<tr>";
+                                rowhtml += "<td><a href='#?' class='group-item'><i class='fa fa-plus-circle'></i></a></td>";
+                            }
+                            rowhtml += "<td hidden>" + responseArr[i].LaunchID + "</td>";
+                            rowhtml += "<td>" + responseArr[i].Itemnumber + "</td>";
+                            rowhtml += "<td>" + responseArr[i].Itemdesc + "</td>";
+                            rowhtml += "<td>" + responseArr[i].Itemsize + "</td>";
+                            rowhtml += "<td>" + responseArr[i].Customeraccname + "</td>";
+                            rowhtml += "<td hidden>" + responseArr[i].Customercode + "</td>";
+                            rowhtml += "<td>" + responseArr[i].Bannername + "</td>";
+                            rowhtml += "<td hidden>" + responseArr[i].Bannercode + "</td>";
+                            //Sample Avail
+                            rowhtml += "<td>"+ responseArr[i].Sampleavail +"</td>";
+                            //launch type
+                            rowhtml += "<td>" + responseArr[i].Launchtype +"</td>";
+                            switch (responseArr[i].Status) {
+                                case "N/A":
+                                    rowhtml += "<td><i class='fa fa-square text-dark'></i> N/A</td>";
+                                    break;
+                                case "Discussion Required":
+                                    rowhtml += "<td><i class='fa fa-square text-dark'></i> Discussion Required</td>";
+                                    break;
+                                case "Ready to Present":
+                                    rowhtml += "<td><i class='fa fa-square text-secondary'></i> Ready to Present</td>";
+                                    break;
+                                case "VOR Change Initiated":
+                                    rowhtml += "<td><i class='fa fa-square text-muted'></i> VOR Change Initiated</td>";
+                                    break;
+                                case "Vor Change Complete":
+                                    rowhtml += "<td><i class='fa fa-square text-success'></i> Vor Change Complete</td>";
+                                    break;
+                                case "Initial Contact":
+                                    rowhtml += "<td><i class='fa fa-square text-info'></i> Initial Contact</td>";
+                                    break;
+                                case "Initial Meeting":
+                                    rowhtml += "<td><i class='fa fa-square text-info'></i> Initial Meeting</td>";
+                                    break;
+                                case "Launch Package Sent":
+                                    rowhtml += "<td><i class='fa fa-square text-info'></i> Launch Package Sent</td>";
+                                    break;
+                                case "Pending":
+                                    rowhtml += "<td><i class='fa fa-square text-primary'></i> Pending</td>";
+                                    break;
+                                case "Declined By Client":
+                                    rowhtml += "<td><i class='fa fa-square text-danger'></i> Declined By Client</td>";
+                                    break;
+                                case "Declined By Retailer":
+                                    rowhtml += "<td><i class='fa fa-square text-danger'></i> Declined By Retailer</td>";
+                                    break;
+                                default:
+                                    rowhtml += "<td><i class='fa fa-square text-success'></i> Accepted</td>";
+                                    break;
+                            }
+                            //category
+                            rowhtml += "<td hidden>" + responseArr[i].Productcategory + "</td>";
+                            //pogreview
+                            rowhtml += "<td hidden>" + responseArr[i].Pogreview + "</td>";
+                            //pogdrop
+                            rowhtml += "<td hidden>" + responseArr[i].Pogdrop + "</td>";
+                            //categorycomment
+                            rowhtml += "<td hidden>" + responseArr[i].Categorycomment + "</td>";
+                            //competitive
+                            rowhtml += "<td hidden>" + responseArr[i].Competitive + "</td>";
+                            rowhtml += "</tr>"
+                            $("#table_cdmlaunches tbody").append(rowhtml);
+                        }
+
+                        
+                        $('#table_cdmlaunches').dataTable({
+                            "columnDefs": [
+                                { "orderable": true },
+                            ],
+                            "searching": false,
+                            "order": [[1, "asc"]],
+                            "lengthChange": false
+                        });
+                        $("#table_cdmlaunches").removeAttr('style');
+                        
+                        $("#step1final").show();
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        function ListComments(item, launchid) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ListComments", "Home")',
+                dataType: 'JSON',
+                data: { launchid : launchid },
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                    }
+                    else {
+                        $('#table_cdmstatuscomment').DataTable().destroy();
+                        var rowhtml = '<tr><td> <a href="#?" class="group-item"><i class="fa fa-plus-circle"></i></a></td>';
+                        rowhtml += '<td hidden><span class="data-launchid">' + item[1] + '</span></td >';//launchid
+                        rowhtml += '<td>' + item[2] + '</td >';//itemid
+                        rowhtml += '<td> <span class="data-itemdesc">' + item[3] + '</span></td >';
+                        rowhtml += '<td>' + item[4] + '</td >';//size
+                        //account
+                        rowhtml += '<td>' + item[5] + '</td>';
+                        rowhtml += '<td hidden>' + item[6] + '</td>';
+                        rowhtml += '<td>' + item[7] + '</td>';
+                        rowhtml += '<td hidden>' + item[8] + '</td>';
+                        var htmlstatuses = CDMDynamicStatus(item[15]);
+                        rowhtml += '<td><select class="data-status form-control">' + htmlstatuses + '</select><br><div class="div-declinedreason d-none"><span>Reason For Decline</span><select class="data-declinedreason form-control"></select></div></td>';//status
+                        rowhtml += '<td><button class="btn btn-outline-primary editcommentbtn-cdm" data-toggle="modal" data-target="#comment-modal">Comments</button></td>';
+                        rowhtml += '<td><input type="date" class="form-control data-followup"></td>';
+                        rowhtml += '<td hidden><label class="data-comment"></label></td>';
+                        rowhtml += '<td hidden><label class="data-jsoncomment">' + response.toString()+ '</label></td>';
+                        rowhtml += '<td hidden><span class="data-category">' + item[10] + '</span></td>';
+                        rowhtml += '<td hidden><span class="data-pogreview">' + item[11] + '</span></td>';
+                        rowhtml += '<td hidden><span class="data-pogdrop">' + item[12] + '</span></td>';
+                        rowhtml += '<td hidden><span class="data-categorycomment">' + item[13] + '</span></td>';
+                        rowhtml += '<td hidden><span class="data-competitive">' + item[14] + '</span></td>';
+                        $("#table_cdmstatuscomment tbody").append(rowhtml);
+                        $('#table_cdmstatuscomment').DataTable({
+                            paging: false,
+                            searching: false,
+                            "order": [[1, "asc"]],
+                            columnDefs: [
+                                { width: 150, targets: 9}
+                            ]
+                        });
+                        $(".data-declinedreason").html($("#select_declinedreason").html());
+                        $(".data-status").change(function () {
+                            var declineddiv = $(this).parent().find(".div-declinedreason");
+                            if ($(this).val() == "12") {
+                                declineddiv.removeClass("d-none");
+                            }
+                            else {
+                                declineddiv.addClass("d-none");
+                            }
+                        })
+                        
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        function SubmitUpdate() {
+            $("#btn-cdmupdate").addClass('disabled');
+            var updatepayloads = [];
+            var itemrows = $("#table_cdmstatuscomment tbody tr");
+            for (i = 0; i < itemrows.length; i++) {
+                var launchid = itemrows.eq(i).find(".data-launchid").text();
+                var category = itemrows.eq(i).find(".data-category").text();
+                var pogreview = itemrows.eq(i).find(".data-pogreview").text();
+                var pogdrop = itemrows.eq(i).find(".data-pogdrop").text();
+                var categorycomment = itemrows.eq(i).find(".data-categorycomment").text();
+                var competitive = itemrows.eq(i).find(".data-competitive").text();
+                var comment = itemrows.eq(i).find(".data-comment").text();
+                var status = itemrows.eq(i).find(".data-status").val();
+                var followup = itemrows.eq(i).find(".data-followup").val();
+                if (status == "12") {
+                    var declinedreason = itemrows.eq(i).find(".data-declinedreason").val();
+                }
+                else {
+                    var declinedreason = "0";
+                }
+
+                var update = {
+                    Launchid: launchid, Category: category, Pogreview: pogreview, Pogdrop: pogdrop,
+                    Categorycomment: categorycomment, Competitive: competitive, Comment: comment, Status: status, Followup: followup, Declinedreason: declinedreason
+                };
+                updatepayloads.push(update);
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SubmitUpdateCDM", "Home")',
+                dataType: 'JSON',
+                data: { updatejson: JSON.stringify(updatepayloads)},
+                success: function (response) {
+                    if (response.status == "error") {
+                        $("#section_error").html(RenderError(response.errorcode, response.errormsg.toString(), response.errorsrc.toString()));
+                        $("#btn-cdmupdate").removeClass('disabled');
+                    }
+                    else {
+                        window.location.replace(response.url);
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('Error occured');
+                    alert(request.responseText);
+                }
+            });
+        }
+        
+    </script>
+}

@@ -1,0 +1,167 @@
+﻿<section id="partial-content">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body ">
+                    <div class="p-3 d-flex align-items-center">
+                        <i class="fa fa-table bg-info p-3 font-2xl mr-3"></i>
+                        <div>
+                            <div class="text-value-sm text-info">Item Report</div>
+                        </div>
+
+                    </div>
+
+                        <div class="mt-2 row col-12">
+                            <div class="col-3">
+                                <div class="py-3"><b>Select Brand</b></div>
+                                <div class="input-group">
+                                    <select class="selectpicker form-control search-result-filter" id="select-brand" data-live-search="true" data-style="btn-white border-secondary bg-white"></select>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="py-3"><b>Select Account</b></div>
+                                <div class="input-group">
+                                    <select class="selectpicker form-control search-result-filter" id="select-kac-item" data-live-search="true" data-style="btn-white border-secondary bg-white"></select>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="py-3"><b>Select Banner</b></div>
+                                <div class="input-group">
+                                    <select class="form-control" id="select-banner"></select>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="py-3"><b>Status</b></div>
+                                <div class="input-group">
+                                    <!--Add select Multiple-->
+                                    <select id="select_item_launchstatus" class="form-control selectpicker" data-style="btn-white border-secondary bg-white" multiple></select>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <span class="input-group-append">
+                                    <button class="btn btn-info btn-block text-white" type="button" onclick="createitemreport()">Search Items</button>
+                                </span>
+                            </div>
+
+                        </div>
+                    <hr />
+                    <div style="display:none;" id="div-itemreport">
+                        <table class="table table-bordered datatable " id="table-report">
+                            <!--Filter by Account-->
+                            <!--Filter by Banner-->
+                            <!--Filter by Brand-->
+                            <thead class="thead-light">
+                                <tr>
+                                    <th hidden>launchid</th>
+                                    <th width="50">Item #</th>
+                                    <th hidden>BDM</th>
+                                    <th>Brand</th>
+                                    <th hidden>CDM</th>
+                                    <th>Account</th>
+                                    <th>Banner</th>
+                                    <th>Item Description</th>
+                                    <th>Item Size</th>
+                                    <th hidden>Case UPC</th>
+                                    <th>Launch Date</th>
+                                    <th>Status</th>
+                                    <th hidden>Follow-up Date</th>
+                                    <th hidden>Status Comments</th>
+                                    <th hidden>Category</th>
+                                    <th hidden>POG Review Date</th>
+                                    <th hidden>POG Drop Date</th>
+                                    <th hidden>Cat. Manager / Contact</th>
+                                    <th hidden>Competitive Info</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <hr />
+                        <button id="btn-itemrecordexcel" class="btn btn-block btn-success" onclick="$(this).parent().find('.buttons-excel').click()">Export To Excel</button>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="launchcomment-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-primary modal-lg" role="form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Launch Comments</h4>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Launch Comments for: Kikkoman Soy Sauce 255 ml</h5>
+                <div class="list-group">
+                    <div class="list-group-item flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-1">Launched Item - Discussion in progress with loblaws</p>
+                            <span><small>01/01/2020</small></span>
+                        </div>
+                        <small><b>Keira Hall</b></small>
+                    </div>
+                    <div class="list-group-item flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-1">Samples sent out - estimated date of arrival: 02/13/2020</p>
+                            <span><small>02/03/2020</small></span>
+                        </div>
+                        <small><b>Keira Hall</b></small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="statuscomment-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-primary modal-lg" role="form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Status Comments</h4>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Comments for: Kikkoman Soy Sauce 255ml</h5>
+                <div class="list-group">
+                    <div class="list-group-item flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-1">Received package and sent it to customer</p>
+                            <span><small>02/02/2020</small></span>
+                        </div>
+                        <small><b>Cathy Pye</b></small>
+                    </div>
+                    <div class="list-group-item flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-1">Email exchange with loblaws</p>
+                            <span><small>02/10/2020</small></span>
+                        </div>
+                        <small><b>Cathy Pye</b></small>
+                    </div>
+                    <div class="list-group-item flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-1">Phone Call with rep</p>
+                            <span><small>02/12/2020</small></span>
+                        </div>
+                        <small><b>Cathy Pye</b></small>
+                    </div>
+                    <div class="list-group-item flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-1">Followed up, planned meeting on march 3rd</p>
+                            <span><small><b>New</b></small></span>
+                        </div>
+                        <small><b>Cathy Pye</b></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

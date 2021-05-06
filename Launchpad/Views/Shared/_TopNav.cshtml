@@ -1,0 +1,22 @@
+﻿@{
+    string name = Request.Cookies["SecToken"]["FullName"];
+}
+<header class="app-header navbar">
+    <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="nav-link" href="@Url.Action("Launchpad","home")">
+        <img class="navbar-brand-minimized ml-4 mr-1" src="~/Images/tol-logo.png" width="35" height="45" alt="TOL Logo">
+        <span class="mr-4 font-lg text-muted "><b>Launchpad</b></span>
+    </a>
+
+    <ul class="nav navbar-nav ml-auto mr-3">
+        Welcome, <b><i class="px-1">  @name</i></b>
+        <li class="nav-item dropdown">
+            <a href="@Url.Action("Logout","Account")" class="text-danger nav-link">
+                <u><i class="fa fa-power-off ml-2"></i> Logout</u>
+            </a>
+        </li>
+    </ul>
+
+</header>

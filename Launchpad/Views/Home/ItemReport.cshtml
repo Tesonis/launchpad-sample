@@ -1,0 +1,281 @@
+﻿
+@{
+    ViewBag.Title = "ItemReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--Create multi item report page for same comments-->
+
+<div class="py-2">
+    <div class="row">
+        <div class="col-12">
+            <section>
+                <ol class="breadcrumb">
+                    <li ><h5 class="text-muted">Item Report &nbsp;</h5></li>
+                    <li><h5 class="text-muted"> - @ViewBag.currentdate</h5></li>
+                </ol>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0">
+                            <div class="card-body p-1">
+                                <div class="row">
+                                    <div class="col-6 border-right">
+                                        <ul class="row">
+                                            <li class="list-group-item border-0 col-6">
+                                                <h5 class="text-muted">Item Number: </h5>
+                                                <b>90001</b>
+                                            </li>
+                                            <li class="list-group-item border-0 col-6">
+                                                <h5 class="text-muted">Item Description: </h5>
+                                                <b>Kikkoman Soy Sauce 255ml</b>
+                                            </li>
+                                            <li class="list-group-item border-0 col-6">
+                                                <h5 class="text-muted">Brand Development Manager: </h5>
+                                                <b>Keira Hall</b>
+                                            </li>
+                                            <li class="list-group-item border-0 col-6">
+                                                <h5 class="text-muted">Brand: </h5>
+                                                <b>Kikkoman Brand</b>
+                                            </li>
+                                            <li class="list-group-item  border-0 col-6">
+                                                <h5 class="text-muted">Customer Development Manager: </h5>
+                                                <b>Cathy Pye</b>
+                                            </li>
+                                            <li class="list-group-item border-0 col-6">
+                                                <h5 class="text-muted">Account: </h5>
+                                                <b>Loblaws</b>
+                                            </li>
+                                            <li class="list-group-item  border-0 col-6">
+                                                <h5 class="text-muted">Banner: </h5>
+                                                <b>Nofrills</b>
+                                            </li>
+                                            <li class="list-group-item  border-0 col-6">
+                                                <h5 class="text-muted">Category: </h5>
+                                                <b>Example Category</b>
+                                            </li>
+
+                                            <li class="list-group-item  border-0 col-6">
+                                                <h5 class="text-muted">Status: </h5>
+                                                <b><i class="fa fa-square text-success"></i> Accepted</b>
+                                            </li>
+                                            <li class="list-group-item border-0 col-6">
+                                                <div class="form-group">
+                                                    <h5 class="text-muted">Last Updated: </h5>
+                                                    <b>04/08/2019</b>
+                                                </div>
+                                            </li>
+                                            
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
+                                        <ul class="row">
+                                            <li class="list-group-item border-0 col-6">
+                                                <div class="form-group">
+                                                    <h5>Launch Date</h5>
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                        </div>
+                                                        <input type="text" class="form-control bg-white" readonly value="01/01/2020">
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item col-6 border-0">
+                                                <div class="form-group">
+                                                    <h5>Follow-up Date</h5>
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                        </div>
+                                                        <input type="text" class="form-control bg-white" readonly value="02/12/2020">
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item border-0 col-6">
+                                                <div class="form-group">
+                                                    <h5>Planogram Review Date</h5>
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                        </div>
+                                                        <input type="text" class="form-control bg-white" readonly value="02/01/2020">
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item col-6 border-0">
+                                                <div class="form-group">
+                                                    <h5>Planogram Drop Date</h5>
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                        </div>
+                                                        <input type="text" class="form-control bg-white" readonly value="02/02/2020">
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item col-6 border-0">
+                                                <div class="form-group">
+                                                    <h5>Contact Info</h5>
+                                                    <textarea class="form-control bg-white" rows="3" id="comment1" readonly>Contact Info Example</textarea>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item col-6 border-0">
+                                                <div class="form-group">
+                                                    <h5>Competitive Info</h5>
+                                                    <textarea class="form-control bg-white" rows="3" id="comment2" readonly>Competitive Info Example</textarea>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="reportacountdetails" class="mt-3">
+                <!--1 brand, any accounts or Any brands, 1 account-->
+                <!--Display average timeframe for all brand items or all account items, display success rate-->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0">
+                            <div class="card-body p-1">
+                                <div class="row col-12 py-3">
+                                    <div class="col-6 my-auto" id="reportData">
+                                        <table class="table table-bordered">
+                                            <caption>Item Number: 90001</caption>
+                                            <thead>
+                                                <tr class="thead-dark">
+                                                    <th colspan="2">Item Timeline</th>
+                                                </tr>
+                                                <tr class="thead-light">
+                                                    <th>Status:</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-dark"></i> Do Not Present</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-dark"></i> Discussion Required</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-secondary"></i> Ready to Present</td>
+                                                    <td>01/01/2019</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-muted"></i> VOR Change Initiated</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-success"></i> VOR Change Complete</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-info"></i> Launch Package Sent</td>
+                                                    <td>01/11/2019</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-info"></i> Initiated Contact</td>
+                                                    <td>01/20/2019</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-info"></i> In Person Meeting</td>
+                                                    <td>02/06/2019</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td><i class="fa fa-square text-primary"></i> Pending</td>
+                                                    <td>02/20/2019</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-success"></i> Accepted</td>
+                                                    <td>04/08/2019</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-danger"></i> Declined by Retailer</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-danger"></i> Declined by Client</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><i class="fa fa-square text-danger"></i> Does Not Apply</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr class="table-light">
+                                                    <th>Time Elapsed</th>
+                                                    <th>98 days</th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                    <div class="col-6" id="reportComments">
+                                        <h5 class="text-muted">Launch Comments</h5>
+                                        <div class="list-group">
+                                            <div class="list-group-item flex-column align-items-start">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <p class="mb-1">Launched Item - Discussion in progress with loblaws</p>
+                                                    <span><small>01/01/2020</small></span>
+                                                </div>
+                                                <small><b>Keira Hall</b></small>
+                                            </div>
+                                            <div class="list-group-item flex-column align-items-start">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <p class="mb-1">Samples sent out - estimated date of arrival: 02/13/2020</p>
+                                                    <span><small>02/03/2020</small></span>
+                                                </div>
+                                                <small><b>Keira Hall</b></small>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <h5 class="text-muted">Status Comments</h5>
+                                        <div class="list-group">
+                                            <div class="list-group-item flex-column align-items-start">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <p class="mb-1">Received package and sent it to customer</p>
+                                                    <span><small>02/02/2020</small></span>
+                                                </div>
+                                                <small><b>Cathy Pye</b></small>
+                                            </div>
+                                            <div class="list-group-item flex-column align-items-start">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <p class="mb-1">Email exchange with loblaws</p>
+                                                    <span><small>02/10/2020</small></span>
+                                                </div>
+                                                <small><b>Cathy Pye</b></small>
+                                            </div>
+                                            <div class="list-group-item flex-column align-items-start">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <p class="mb-1">Phone Call with rep</p>
+                                                    <span><small>02/12/2020</small></span>
+                                                </div>
+                                                <small><b>Cathy Pye</b></small>
+                                            </div>
+                                            <div class="list-group-item flex-column align-items-start">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <p class="mb-1">Followed up, planned meeting on march 3rd</p>
+                                                    <span><small>02/20/2019</small></span>
+                                                </div>
+                                                <small><b>Cathy Pye</b></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </section>
+
+        </div>
+    </div>
+</div>
